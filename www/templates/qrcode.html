@@ -1,0 +1,45 @@
+<ion-view>
+  <ion-nav-bar class="bar-calm">
+    <ion-nav-title>My QR Code</ion-nav-title>
+      <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
+    </ion-nav-bar>
+  <ion-content class="has-header">
+  	<div style="position: relative;">
+  		<img src='img\bg_msi_account.png'/ style="max-width: 100%">
+    	<img id="qr" style="position: absolute; 
+    	top: 220px; 
+    	left:0;	right:0;
+		margin-left:auto;
+		margin-right:auto; 
+		max-width: 70%">
+    </div>
+    <div style="position: absolute; top: 80px; left: 50px; font-size: 20px">
+    	<div class="row">
+    		<div class="col col-25">
+    			<img src="img\user.png" width="100%">
+    		</div>
+    		<div class="col">
+    			<br>
+    			{{fullName}}
+    			<br><br>
+    			User ID: {{userid}}
+    		</div>
+    </div>
+    <div style="position: absolute; top: 350px; 
+    			left: 0px; right: 0px;
+				margin-left:auto;
+				margin-right:auto;
+				max-width: 80%;
+    			font-size: 20px">
+    	<div class="row">
+    		<div class="col col-20">
+    			<br>
+    			<i class="icon ion-ios-bell"></i>
+    		</div>
+    		<div class="col">
+		    	Face The Mobile Screen Towards The Top Up Device.
+		    </div>
+		</div>
+    </div>
+  </ion-content>
+</ion-view>

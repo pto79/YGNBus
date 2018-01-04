@@ -1,0 +1,36 @@
+<ion-view>
+  <ion-nav-bar class="bar-calm">
+    <ion-nav-title>Txn History: {{TransactionsHistory.length}} Record(s)</ion-nav-title>
+      <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
+    </ion-nav-bar>
+  <ion-content class="has-header">
+    <div class="row" style="font-weight: bold; border-bottom: 1px solid lightgrey; text-align:center;">
+        <div class="col">
+            Txn Date
+        </div>
+        <div class="col">
+            Account Balance
+        </div>
+        <div class="col">
+            Amount
+        </div>
+        <div class="col">
+            Type
+        </div>
+    </div>
+    <div class="row" ng-repeat="transaction in TransactionsHistory" style=" border-bottom: 1px solid lightgrey; text-align:center; align-items: center;">
+        <div class="col">
+            {{transaction.integrationDate}}
+        </div>
+        <div class="col">
+            K {{transaction.balance}}
+        </div>
+        <div class="col">
+            (K {{transaction.changeAmount}})
+        </div>
+        <div class="col">
+            {{transaction.type}}
+        </div>
+    </div>
+  </ion-content>
+</ion-view>

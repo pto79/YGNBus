@@ -1,0 +1,45 @@
+<ion-view>
+  <ion-nav-bar class="bar-calm">
+    <ion-nav-title>Balance: K {{balance}}</ion-nav-title>
+      <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
+    </ion-nav-bar>
+  <ion-content class="has-header">
+
+    <div style="position: relative;" ng-repeat="ticket in activeTickets">
+      <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
+
+      <div style="position: absolute; top: 70px; left: 25px">
+        <img src="img\ic_bus_black.png" style="width: 60%">
+      </div>
+
+      <div style="position: absolute; top: 120px; left: 70px; color: red; font-weight: bold; font-size: 40px">
+        {{ticket.lineCode}}
+      </div>
+
+      <div style="position: absolute; top: 100px; left: 160px; font-size: 20px;">
+          {{ticket.ticketLabel}}<br><br>
+          {{ticket.status}}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          K {{ticket.fare}}
+      </div>
+
+      <div style="position: absolute; top: 350px; left: 50px; font-size: 20px">
+        Purchase <i class="icon ion-ios-cart-outline"></i> {{ticket.generationDate}}
+        <br><br>
+        Valid Till <i class="icon ion-android-time"></i> {{ticket.expirationDate}}
+        <br><br>
+        Bus Code <i class="icon ion-android-bus"></i> 
+        <br><br>
+        Used 
+      </div>
+    </div>
+
+    <img id="qr" style="position: absolute; 
+    top: 200px; 
+    left:0; right:0;
+    margin-left:auto;
+    margin-right:auto; 
+    max-width: 70%">
+
+  </ion-content>
+</ion-view>

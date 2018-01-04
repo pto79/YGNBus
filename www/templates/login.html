@@ -1,0 +1,22 @@
+<ion-view title="Sign-In">
+  <ion-content>
+      <div class="list list-inset">
+          <label class="item item-input">
+              <input ng-model="input.username" placeholder="Username" type="text">
+              </input>
+          </label>
+          <label class="item item-input">
+              <input ng-model="input.password" placeholder="Password" type="password">
+              </input>
+          </label>
+          <button class="button button-block button-calm icon ion-log-in" ng-click="login()">
+              Sign in
+          </button>        
+      </div>
+          <div>Mobile Application server address: </div>
+          <label class="item item-input">
+              <input ng-model="input.address" type="text">
+              </input>
+          </label>
+  </ion-content>
+</ion-view>
