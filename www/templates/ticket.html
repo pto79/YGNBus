@@ -11,16 +11,20 @@
           {{ticket.tripCode}}
         </div>
         <div class="row item-text-wrap" style="align-items: middle">
-          <div class="col col-center">
+          <div class="col col-50 col-center">
             <h2>{{ticket.sourceStation}}</h2>
-            <br>
+          </div>
+          <div class="col col-10 col-center" style="font-size: 20px; text-align: center"><i class="icon material-icons">directions_run</i></div>
+          <div class="col col-center">
+            <h2 style="text-align: right">{{ticket.destinationStation}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-75">
             <h2>{{ticket.ticketLabel}}</h2>
           </div>
-          <div class="col col-10 col-center" style="font-size: 20px"><i class="icon ion-android-walk"></i></div>
-          <div class="col col-center">
-            <h2>{{ticket.destinationStation}}</h2>
-            <br>
-            <h2>K {{ticket.fareQuantity}}</h2>
+          <div class="col">
+            <h2 style="text-align: right">K {{ticket.fareQuantity}}</h2>
           </div>
         </div>
       </div>

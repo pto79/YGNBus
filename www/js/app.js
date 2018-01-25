@@ -59,7 +59,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
     views: {
       'menuContent': {
         templateUrl: 'templates/account.html',
-        //controller: 'PlaylistCtrl'
+        controller: 'AccountCtrl'
       }
     }
   })

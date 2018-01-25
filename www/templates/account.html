@@ -1,5 +1,30 @@
-<ion-view title="Edit Account Info">
+<ion-view>
+	<ion-nav-bar class="bar-calm">
+		<ion-nav-title>Edit Account Info</ion-nav-title>
+		<ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
+  	</ion-nav-bar>
   <ion-content class="has-header">
-    <h1>Account info</h1>
+	<form>
+		<div class = "list">
+		   <label class = "item item-input item-floating-label">
+		      <span class = "input-label">Phone Number</span>
+		      <input id = "phonenumber" type = "text" placeholder = {{input.phoneNumber}} ng-model="input.phoneNumber"/>
+		   </label>
+
+		   <label class = "item item-input item-floating-label">
+		      <span class = "input-label">Email</span>
+		      <input id = "email" type = "text" placeholder = {{input.email}} ng-model="input.email"/>
+		   </label>
+		</div>
+
+	    <button type="submit" class="button button-block button-stable" ng-click="editAccount()">
+	    	<div class="row">
+	    		<div class="col col-10 col-center">
+	    			<i class="icon material-icons">portrait</i>
+	    		</div>
+	    		<div class="col">Edit Account Info</div>
+	    	</div>
+	    </button>
+	</form>
   </ion-content>
 </ion-view>

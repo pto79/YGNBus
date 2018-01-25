@@ -7,48 +7,44 @@ angular.module('starter.controllers', ['angular-jwt'])
     $scope.input.password = "asdfg";
 
     $scope.login = function() {
-        //$state.go('app.main');
-        //return;
-        console.log($scope.input.address);
-        var server = $scope.input.address + "login";
-        var res = $http({
-            method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                username: $scope.input.username,
-                password: $scope.input.password,
-                lastTicketSerial: '2100059'
-            }
-        })
-        res.success(function(data, status, header, config) {
-            console.log(data);
-            if (data.resultType == 'OK') {
-                $window.sessionStorage.setItem("token", data.token);
-                $window.sessionStorage.setItem("fullName", data.accountInfo.fullName);
-                $window.sessionStorage.setItem("gender", data.accountInfo.gender);
-                $window.sessionStorage.setItem("balance", data.accountInfo.balance);
-                $window.sessionStorage.setItem("freezedAmount", data.accountInfo.freezedAmount);
-                $window.sessionStorage.setItem("tickets", data.accountInfo.tickets);
-                $window.sessionStorage.setItem("server", $scope.input.address);
-                $window.sessionStorage.setItem("oldpassword", $scope.input.password);
-                $state.go('app.main');                
-            } else $ionicPopup.alert({
-                title: 'Login failed!',
-                template: 'Please check your credentials!',
-                okText: 'OK'
-            });
-        });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
-        });  
+      var server = $scope.input.address + "login";
+      var res = $http({
+          method: "POST",
+          url: server,
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          data: {
+              username: $scope.input.username,
+              password: $scope.input.password,
+              lastTicketSerial: '2100059'
+          }
+      })
+      res.success(function(data, status, header, config) {
+          console.log(data);
+          if (data.resultType == 'OK') {
+              $window.sessionStorage.setItem("token", data.token);
+              $window.sessionStorage.setItem("fullName", data.accountInfo.fullName);
+              $window.sessionStorage.setItem("gender", data.accountInfo.gender);
+              $window.sessionStorage.setItem("balance", data.accountInfo.balance);
+              $window.sessionStorage.setItem("freezedAmount", data.accountInfo.freezedAmount);
+              $window.sessionStorage.setItem("tickets", data.accountInfo.tickets);
+              $window.sessionStorage.setItem("server", $scope.input.address);
+              $window.sessionStorage.setItem("oldpassword", $scope.input.password);
+              $state.go('app.main');                
+          } else $ionicPopup.alert({
+              title: 'Login failed!',
+              template: 'Please check your credentials!',
+              okText: 'OK'
+          });
+      });
+      res.error(function(data, status, header, config) {
+          var alertPopup = $ionicPopup.alert({
+              title: 'Server error!',
+              template: 'Please check your internet connection!',
+              okText: 'OK'
+          });
+      });
     }
 })
 
@@ -57,8 +53,14 @@ angular.module('starter.controllers', ['angular-jwt'])
   $scope.fullName = $window.sessionStorage.getItem("fullName");
   $scope.balance = $window.sessionStorage.getItem("balance");
 
-  $scope.closeMenu = function() {
+  $scope.changePass = function() {
     $ionicSideMenuDelegate.toggleLeft();
+    $state.go('app.password');
+  }
+
+  $scope.editAccount = function() {
+    $ionicSideMenuDelegate.toggleLeft();
+    $state.go('app.account');
   }
 
   $scope.logout = function() {
@@ -67,6 +69,10 @@ angular.module('starter.controllers', ['angular-jwt'])
           disableBack: true
       });
     $state.go('login');
+  }
+
+  $scope.close = function() {
+    ionic.Platform.exitApp();
   }
 
 })
@@ -99,40 +105,40 @@ angular.module('starter.controllers', ['angular-jwt'])
   var baseserver = $window.sessionStorage.getItem("server");
 
   function getValidTickets() {
-        server = baseserver + "getAvailableTickets";
-        var res = $http({
-            method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                token: token
-            }
-        })
-        res.success(function(data, status, header, config) {
-            console.log(data);
-            if (data.resultType == 'OK')
-                $scope.avaibleTickets = data.avaibleTickets;
+    server = baseserver + "getAvailableTickets";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK')
+            $scope.avaibleTickets = data.avaibleTickets;
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
         });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
-        });
+    });
   }
 
   $scope.buyTicket = function(ticket) {
-    //console.log(id);
     var tmp = 'Bus Number: ' + ticket.tripCode + '<br>' 
     + 'From: ' + ticket.sourceStation + '<br>' 
     + 'To: ' + ticket.destinationStation + '<br>' 
     + 'Ticket Price: K ' + ticket.fareQuantity;
     var confirmPopup = $ionicPopup.confirm({
      title: 'Buy Ticket Confirmation',
+     okText: 'CONFIRM',
+     cancelText: 'CANCEL',
      template: tmp
     });
 
@@ -141,7 +147,6 @@ angular.module('starter.controllers', ['angular-jwt'])
         server = baseserver + "buyTicket";
         var res = $http({
             method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
             url: server,
             headers: {
                 'Content-Type': 'application/json'
@@ -204,34 +209,33 @@ angular.module('starter.controllers', ['angular-jwt'])
   $scope.showDetail = false;
 
   function getMyTickets() {
-        server = baseserver + "checkTicketsStatus";
-        var res = $http({
-            method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                token: token,
-                lastTicketSerial: 0,
-                ticketSerials: [0]
-            }
-        })
-        res.success(function(data, status, header, config) {
-            console.log(data);
-            if (data.resultType == 'OK') {
-                $scope.TicketsHistory = data.accountInfo.tickets;
-                console.log($scope.TicketsHistory);
-            }
+    server = baseserver + "checkTicketsStatus";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token,
+            lastTicketSerial: 0,
+            ticketSerials: [0]
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+            $scope.TicketsHistory = data.accountInfo.tickets;
+            console.log($scope.TicketsHistory);
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
         });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
-        });
+    });
   }
 
   $scope.detail = function() {
@@ -247,32 +251,30 @@ angular.module('starter.controllers', ['angular-jwt'])
   var baseserver = $window.sessionStorage.getItem("server");
 
   function getTransaction() {
-        server = baseserver + "getTransactionsHistory";
-        var res = $http({
-            method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                token: token
-            }
-        })
-        res.success(function(data, status, header, config) {
-            console.log(data);
-            if (data.resultType == 'OK') {
-                $scope.TransactionsHistory = data.transactions;
-                //console.log($scope.TicketsHistory);
-            }
+    server = baseserver + "getTransactionsHistory";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+            $scope.TransactionsHistory = data.transactions;
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
         });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
-        });
+    });
   }
 
   getTransaction();
@@ -304,68 +306,228 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper) {
+.controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper, $state) {
   var token = $window.sessionStorage.getItem("token");
   var tokenPayload = jwtHelper.decodeToken(token);
   var baseserver = $window.sessionStorage.getItem("server");
   $scope.activeTickets = [];
 
-  function getActiveTicket() {
-        server = baseserver + "checkMyTickets";
-        var res = $http({
-            method: "POST",
-            //url: buildconfig.qrServiceUrl + "login",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                token: token,
-                lastTicketSerial: 0
-            }
-        })
-        res.success(function(data, status, header, config) {
-            console.log(data);
-            if (data.resultType == 'OK') {
-                //$scope.tickets = data.accountInfo.tickets;
-                angular.forEach(data.accountInfo.tickets, function(ticket) {
-                    if (ticket.status == 'UNUSED') 
-                      $scope.activeTickets.push(ticket);
-                })
+  $scope.goMain = function() {
+    $state.go('app.main');
+  }
 
-                QRCode.toDataURL(tokenPayload.jti, function (err, url) {
-                  if (err) throw err
-                 
-                  var img = document.getElementById('qr')
-                  img.src = url
-                })
-            }
+  function getActiveTicket() {
+    server = baseserver + "checkMyTickets";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token,
+            lastTicketSerial: 0
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+            angular.forEach(data.accountInfo.tickets, function(ticket) {
+                if (ticket.status == 'UNUSED') 
+                  $scope.activeTickets.push(ticket);
+            })
+
+            QRCode.toDataURL(tokenPayload.jti, function (err, url) {
+              if (err) throw err
+             
+              var img = document.getElementById('qr')
+              img.src = url
+            })
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
         });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
-        });
+    });
   }
 
   getActiveTicket();
 })
 
 
-.controller('PasswordCtrl', function($scope, $window, $http, $ionicPopup){
+.controller('PasswordCtrl', function($scope, $window, $http, $ionicPopup, $state){
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
 var oldpassword = $window.sessionStorage.getItem("oldpassword");
 $scope.input = {};
 
   $scope.changePass = function() {
     console.log($scope.input);
-    if($scope.input.oldpassword != oldpassword)
+    if($scope.input.oldpassword == undefined) {
+      document.getElementById("oldpassword").setCustomValidity("This field is required");
+      return;
+    }
+    else if($scope.input.oldpassword != oldpassword) {
       document.getElementById("oldpassword").setCustomValidity("The old password is wrong");
-    else
+      return;
+    }
+    else {
       document.getElementById("oldpassword").setCustomValidity("");
+    }
+
+    if($scope.input.newpassword == undefined) {
+      document.getElementById("newpassword").setCustomValidity("This field is required");
+      return;
+    }
+    else if($scope.input.newpassword.length < 5) {
+      document.getElementById("newpassword").setCustomValidity("Password is too short (minimum is 5 characters)");
+      return;
+    }
+    else {
+      document.getElementById("newpassword").setCustomValidity("");
+    }
+
+    if($scope.input.newpassword2 == undefined) {
+      document.getElementById("newpassword2").setCustomValidity("This field is required");
+      return;
+    }
+    else if($scope.input.newpassword != $scope.input.newpassword2) {
+      document.getElementById("newpassword2").setCustomValidity("New Password Mismatch.");
+      return;
+    }
+    else {
+      document.getElementById("newpassword2").setCustomValidity("");
+    }
+
+    server = baseserver + "changePassword";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token,
+            oldPassword: $scope.input.oldpassword,
+            newPassword: $scope.input.newpassword
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+          $window.sessionStorage.setItem("token", data.newToken);
+          $window.sessionStorage.setItem("oldpassword", $scope.input.newpassword);
+          var alertPopup = $ionicPopup.alert({
+                title: '<img src="img\\ic_bus_ok.png" width="100%">',
+                template: 'Change Password Success.',
+                okText: 'Back To Home'
+            });
+          alertPopup.then(function(res) {
+             $state.go('app.main');
+          });
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
   }
 
+})
+
+
+.controller('AccountCtrl', function($scope, $window, $http, $ionicPopup, $state){
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
+$scope.input = {};
+
+  function getAccount() {
+    server = baseserver + "getPassengerInfo";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+          $scope.input = data;
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
+  }
+
+  $scope.editAccount = function() {
+    console.log($scope.input);
+    if($scope.input.email == undefined) {
+      document.getElementById("email").setCustomValidity("This field is required");
+      return;
+    }
+    else {
+      document.getElementById("email").setCustomValidity("");
+    }
+
+    if($scope.input.phoneNumber == undefined) {
+      document.getElementById("phonenumber").setCustomValidity("This field is required");
+      return;
+    }
+    else {
+      document.getElementById("phonenumber").setCustomValidity("");
+    }
+
+    server = baseserver + "editInfo";
+    var res = $http({
+        method: "POST",
+        //url: buildconfig.qrServiceUrl + "login",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token,
+            phoneNumber: $scope.input.phoneNumber,
+            email: $scope.input.email
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+          var alertPopup = $ionicPopup.alert({
+                title: '<img src="img\\ic_bus_ok.png" width="100%">',
+                template: 'Edit Account Info Success.',
+                okText: 'Back To Home'
+            });
+          alertPopup.then(function(res) {
+             $state.go('app.main');
+          });
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
+  }
+
+  getAccount();
 })
 
 

@@ -1,14 +1,16 @@
 <ion-view>
   <ion-nav-bar class="bar-calm">
     <ion-nav-title>Balance: K {{balance}}</ion-nav-title>
-      <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
+      <ion-nav-buttons side="left">
+        <button class="button button-icon icon ion-android-arrow-back" ng-click="goMain()"></button>
+      </ion-nav-buttons>
     </ion-nav-bar>
   <ion-content class="has-header">
 
     <div style="position: relative;" ng-repeat="ticket in activeTickets">
       <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
 
-      <div style="position: absolute; top: 70px; left: 25px">
+      <div style="position: absolute; top: 70px; left: 30px">
         <img src="img\ic_bus_black.png" style="width: 60%">
       </div>
 
@@ -16,22 +18,63 @@
         {{ticket.lineCode}}
       </div>
 
-      <div style="position: absolute; top: 100px; left: 160px; font-size: 20px;">
-          {{ticket.ticketLabel}}<br><br>
-          {{ticket.status}}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          K {{ticket.fare}}
+      <div style="position: absolute; top: 100px; left: 160px; font-size: 20px; width: 80%">
+        <div class="row">
+          <div class="col">
+            {{ticket.ticketLabel}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-50">
+            {{ticket.status}}
+          </div>
+          <div class="col">
+            K {{ticket.fare}}
+          </div>
+        </div>
       </div>
 
-      <div style="position: absolute; top: 350px; left: 50px; font-size: 20px">
-        Purchase <i class="icon ion-ios-cart-outline"></i> {{ticket.generationDate}}
-        <br><br>
-        Valid Till <i class="icon ion-android-time"></i> {{ticket.expirationDate}}
-        <br><br>
-        Bus Code <i class="icon ion-android-bus"></i> 
-        <br><br>
-        Used 
+      <div style="position: absolute; top: 350px; left: 50px; font-size: 20px; width: 90%">
+        <div class="row">
+          <div class="col col-33">
+            Purchase
+          </div>
+          <div class="col col-10">
+            <i class="icon ion-ios-cart-outline"></i>
+          </div>
+          <div class="col">
+            {{ticket.generationDate}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Valid Till
+          </div>
+          <div class="col col-10">
+            <i class="icon ion-android-time"></i>
+          </div>
+          <div class="col">
+            {{ticket.expirationDate}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Bus Code
+          </div>
+          <div class="col col-10">
+            <i class="icon ion-android-bus"></i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Used
+          </div>
+          <div class="col col-10">
+            <i class="icon fa fa-ticket"></i>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <img id="qr" style="position: absolute; 
