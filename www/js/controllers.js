@@ -101,10 +101,11 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('TicketCtrl', function($scope, $window, $http, $ionicPopup, $state) {
-  var token = $window.sessionStorage.getItem("token");
-  var baseserver = $window.sessionStorage.getItem("server");
 
   function getValidTickets() {
+    var token = $window.sessionStorage.getItem("token");
+    var baseserver = $window.sessionStorage.getItem("server");
+
     server = baseserver + "getAvailableTickets";
     var res = $http({
         method: "POST",
@@ -178,6 +179,7 @@ angular.module('starter.controllers', ['angular-jwt'])
 
                   alertPopup.then(function(res) {
                      console.log(data.ticketResultStatus);
+                     $window.sessionStorage.setItem("viewStatus", 0); //View New Ticket
                      $state.go('app.viewticket');
                   });
 
@@ -203,27 +205,11 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper) {
-  var token = $window.sessionStorage.getItem("token");
-  var baseserver = $window.sessionStorage.getItem("server");
-  var tokenPayload = jwtHelper.decodeToken(token);
-  $scope.showDetail = false;
-
-  var opts = {
-    //errorCorrectionLevel: 'Q',
-    //type: 'image/jpeg',
-    //rendererOpts: {
-    //  quality: 0.3
-    //}
-    //version: 15
-  }
-   
-  QRCode.toDataURL(tokenPayload.jti, opts, function (err, url) {
-    if (err) throw err
-    $scope.qrUrl = url;
-  })
+.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper, $state) {
 
   function getMyTickets() {
+    var baseserver = $window.sessionStorage.getItem("server");
+
     server = baseserver + "checkTicketsStatus";
     var res = $http({
         method: "POST",
@@ -254,7 +240,8 @@ angular.module('starter.controllers', ['angular-jwt'])
   }
 
   $scope.detail = function() {
-    $scope.showDetail = true;
+    $window.sessionStorage.setItem("viewStatus", 1);  //from Ticket History
+    $state.go('app.viewticket');
   }
 
   getMyTickets();
@@ -262,10 +249,11 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('TransactionCtrl', function($scope, $window, $http, $ionicPopup) {
-  var token = $window.sessionStorage.getItem("token");
-  var baseserver = $window.sessionStorage.getItem("server");
 
   function getTransaction() {
+    var token = $window.sessionStorage.getItem("token");
+    var baseserver = $window.sessionStorage.getItem("server");
+
     server = baseserver + "getTransactionsHistory";
     var res = $http({
         method: "POST",
@@ -320,16 +308,18 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper, $state) {
-  var token = $window.sessionStorage.getItem("token");
-  var tokenPayload = jwtHelper.decodeToken(token);
-  var baseserver = $window.sessionStorage.getItem("server");
-  $scope.activeTickets = [];
 
   $scope.goMain = function() {
     $state.go('app.main');
   }
 
   function getActiveTicket() {
+    var token = $window.sessionStorage.getItem("token");
+    var tokenPayload = jwtHelper.decodeToken(token);
+    var baseserver = $window.sessionStorage.getItem("server");
+    $scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
+    $scope.activeTickets = [];
+    
     server = baseserver + "checkMyTickets";
     var res = $http({
         method: "POST",
@@ -345,10 +335,13 @@ angular.module('starter.controllers', ['angular-jwt'])
     res.success(function(data, status, header, config) {
         console.log(data);
         if (data.resultType == 'OK') {
+          if($scope.viewStatus == 0)
             angular.forEach(data.accountInfo.tickets, function(ticket) {
                 if (ticket.status == 'UNUSED') 
                   $scope.activeTickets.push(ticket);
-            })
+            });
+          else if($scope.viewStatus == 1)
+            $scope.activeTickets = data.accountInfo.tickets;
 
             QRCode.toDataURL(tokenPayload.jti, function (err, url) {
               if (err) throw err
@@ -370,12 +363,13 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('PasswordCtrl', function($scope, $window, $http, $ionicPopup, $state){
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-var oldpassword = $window.sessionStorage.getItem("oldpassword");
-$scope.input = {};
+  var token = $window.sessionStorage.getItem("token");
+  var baseserver = $window.sessionStorage.getItem("server");
+  var oldpassword = $window.sessionStorage.getItem("oldpassword");
 
   $scope.changePass = function() {
+    $scope.input = {};
+
     console.log($scope.input);
     if($scope.input.oldpassword == undefined) {
       document.getElementById("oldpassword").setCustomValidity("This field is required");
@@ -454,11 +448,12 @@ $scope.input = {};
 
 
 .controller('AccountCtrl', function($scope, $window, $http, $ionicPopup, $state){
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-$scope.input = {};
 
   function getAccount() {
+    var token = $window.sessionStorage.getItem("token");
+    var baseserver = $window.sessionStorage.getItem("server");
+    $scope.input = {};
+
     server = baseserver + "getPassengerInfo";
     var res = $http({
         method: "POST",

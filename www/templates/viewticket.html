@@ -6,7 +6,12 @@
       </ion-nav-buttons>
     </ion-nav-bar>
   <ion-content class="has-header">
-
+    <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 0">
+      New Ticket
+    </div>
+    <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 1">
+      Ticket(s) : {{activeTickets.length}}
+    </div>
     <div style="position: relative;" ng-repeat="ticket in activeTickets">
       <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
 
@@ -43,14 +48,20 @@
     <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
         <img ng-src={{qrUrl}} style="max-width: 100%; display: block; margin: auto;">
     </div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
+        <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
+        <img src="img\img_refund_en.png" style="max-width: 100%" ng-if="ticket.status == 'REFUND'">
+        <img src="img\img_used_en.png" style="max-width: 100%" ng-if="ticket.status == 'USED'">
+        <img src="img\img_disabled_en.png" style="max-width: 100%" ng-if="ticket.status == 'DISABLED'">
+    </div>
 
       <div style="position: absolute; top: 0px; margin-top: 90%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
         <div class="row">
           <div class="col col-33">
             Purchase
           </div>
-          <div class="col col-10">
-            <i class="icon ion-ios-cart-outline"></i>
+          <div class="col col-20">
+            <i class="icon material-icons">add_shopping_cart</i>
           </div>
           <div class="col">
             {{ticket.generationDate.substr(0,ticket.generationDate.lastIndexOf(':'))}}
@@ -60,8 +71,8 @@
           <div class="col col-33">
             Valid Till
           </div>
-          <div class="col col-10">
-            <i class="icon ion-android-time"></i>
+          <div class="col col-20">
+            <i class="icon material-icons">access_time</i>
           </div>
           <div class="col">
             {{ticket.expirationDate.substr(0,ticket.expirationDate.lastIndexOf(':'))}}
@@ -71,16 +82,16 @@
           <div class="col col-33">
             Bus Code
           </div>
-          <div class="col col-10">
-            <i class="icon ion-android-bus"></i>
+          <div class="col col-20">
+            <i class="icon material-icons">directions_bus</i>
           </div>
         </div>
         <div class="row">
           <div class="col col-33">
             Used
           </div>
-          <div class="col col-10">
-            <i class="icon fa fa-ticket"></i>
+          <div class="col col-20">
+            <i class="icon material-icons">confirmation_number</i>
           </div>
         </div>
       </div>
