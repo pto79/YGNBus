@@ -4,7 +4,8 @@
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
   <ion-content class="has-header">
-    <div class="row" ng-show="showDetail == false" style="font-weight: bold; border-bottom: 1px solid lightgrey; text-align:center; padding: 5px">
+    <div ng-if="showDetail == false">
+    <div class="row" style="font-weight: bold; border-bottom: 1px solid lightgrey; text-align:center; padding: 5px">
         <div class="col">
             Ticket Date
         </div>
@@ -18,7 +19,7 @@
             Statu
         </div>
     </div>
-    <div class="row" ng-show="showDetail == false" ng-repeat="ticket in TicketsHistory" style=" border-bottom: 1px solid lightgrey; text-align:center; padding: 5px" ng-click="detail()">
+    <div class="row" ng-repeat="ticket in TicketsHistory" style=" border-bottom: 1px solid lightgrey; text-align:center; padding: 5px" ng-click="detail()">
         <div class="col col-center">
             {{ticket.generationDate}}
         </div>
@@ -39,8 +40,9 @@
             {{ticket.status}}
         </div>
     </div>
+    </div>
 
-    <div style="position: relative;" ng-show="showDetail == true" ng-repeat="ticket in TicketsHistory">
+    <div style="position: relative;" ng-if="showDetail == true" ng-repeat="ticket in TicketsHistory">
       <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
 
       <div style="position: absolute; top: 0px; left: 0px; margin-top: 50px; margin-left: 20px;">
@@ -74,13 +76,16 @@
     </div>
 
     <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
+      <img ng-src={{qrUrl}} style="max-width: 100%; display: block; margin: auto;">
+    </div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
         <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
         <img src="img\img_refund_en.png" style="max-width: 100%" ng-if="ticket.status == 'REFUND'">
         <img src="img\img_used_en.png" style="max-width: 100%" ng-if="ticket.status == 'USED'">
         <img src="img\img_disabled_en.png" style="max-width: 100%" ng-if="ticket.status == 'DISABLED'">
     </div>
 
-      <div style="position: absolute; top: 0px; margin-top: 80%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
+      <div style="position: absolute; top: 0px; margin-top: 90%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
         <div class="row">
           <div class="col col-33">
             Purchase
@@ -89,7 +94,7 @@
             <i class="icon ion-ios-cart-outline"></i>
           </div>
           <div class="col">
-            {{ticket.generationDate}}
+            {{ticket.generationDate.substr(0,ticket.generationDate.lastIndexOf(':'))}}
           </div>
         </div>
         <div class="row">
@@ -100,7 +105,7 @@
             <i class="icon ion-android-time"></i>
           </div>
           <div class="col">
-            {{ticket.expirationDate}}
+            {{ticket.expirationDate.substr(0,ticket.expirationDate.lastIndexOf(':'))}}
           </div>
         </div>
         <div class="row">

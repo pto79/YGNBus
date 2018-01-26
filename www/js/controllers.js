@@ -203,10 +203,25 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup) {
+.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper) {
   var token = $window.sessionStorage.getItem("token");
   var baseserver = $window.sessionStorage.getItem("server");
+  var tokenPayload = jwtHelper.decodeToken(token);
   $scope.showDetail = false;
+
+  var opts = {
+    //errorCorrectionLevel: 'Q',
+    //type: 'image/jpeg',
+    //rendererOpts: {
+    //  quality: 0.3
+    //}
+    //version: 15
+  }
+   
+  QRCode.toDataURL(tokenPayload.jti, opts, function (err, url) {
+    if (err) throw err
+    $scope.qrUrl = url;
+  })
 
   function getMyTickets() {
     server = baseserver + "checkTicketsStatus";
@@ -298,9 +313,7 @@ angular.module('starter.controllers', ['angular-jwt'])
    
   QRCode.toDataURL(tokenPayload.jti, opts, function (err, url) {
     if (err) throw err
-   
-    var img = document.getElementById('qr')
-    img.src = url
+    $scope.qrUrl = url;
   })
 
 })
@@ -339,9 +352,7 @@ angular.module('starter.controllers', ['angular-jwt'])
 
             QRCode.toDataURL(tokenPayload.jti, function (err, url) {
               if (err) throw err
-             
-              var img = document.getElementById('qr')
-              img.src = url
+              $scope.qrUrl = url;
             })
         }
     });

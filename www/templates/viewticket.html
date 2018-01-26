@@ -10,31 +10,41 @@
     <div style="position: relative;" ng-repeat="ticket in activeTickets">
       <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
 
-      <div style="position: absolute; top: 70px; left: 30px">
-        <img src="img\ic_bus_black.png" style="width: 60%">
-      </div>
-
-      <div style="position: absolute; top: 120px; left: 70px; color: red; font-weight: bold; font-size: 40px">
-        {{ticket.lineCode}}
-      </div>
-
-      <div style="position: absolute; top: 100px; left: 160px; font-size: 20px; width: 80%">
+      <div style="position: absolute; top: 0px; left: 0px; margin-top: 50px; margin-left: 20px;">
         <div class="row">
-          <div class="col">
-            {{ticket.ticketLabel}}
+          <div class="col col-center" style="max-width: 100px; min-width: 100px; min-height: 100px;">
+            <div style="position: relative;">
+              <div style="position: absolute; left: 50%; width: auto; transform: translateX(-50%);">
+                <img src="img\ic_bus_black.png" style="max-width: 100px;">
+              </div>
+            </div>
+            <div style="color: red; font-weight: bold; font-size: 30px; text-align: center; vertical-align: middle; line-height: 100px;">
+              {{ticket.lineCode}}
+            </div>
+          </div>
+          <div class="col col-center" style="font-size: 18px">
+            <div class="row">
+              <div class="col">
+                {{ticket.ticketLabel}}
+              </div>
+            </div>
+          <div class="row">
+            <div class="col col-50">
+              {{ticket.status}}
+            </div>
+            <div class="col">
+              K {{ticket.fare}}
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col col-50">
-            {{ticket.status}}
-          </div>
-          <div class="col">
-            K {{ticket.fare}}
-          </div>
-        </div>
       </div>
+    </div>
 
-      <div style="position: absolute; top: 350px; left: 50px; font-size: 20px; width: 90%">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
+        <img ng-src={{qrUrl}} style="max-width: 100%; display: block; margin: auto;">
+    </div>
+
+      <div style="position: absolute; top: 0px; margin-top: 90%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
         <div class="row">
           <div class="col col-33">
             Purchase
@@ -43,7 +53,7 @@
             <i class="icon ion-ios-cart-outline"></i>
           </div>
           <div class="col">
-            {{ticket.generationDate}}
+            {{ticket.generationDate.substr(0,ticket.generationDate.lastIndexOf(':'))}}
           </div>
         </div>
         <div class="row">
@@ -54,7 +64,7 @@
             <i class="icon ion-android-time"></i>
           </div>
           <div class="col">
-            {{ticket.expirationDate}}
+            {{ticket.expirationDate.substr(0,ticket.expirationDate.lastIndexOf(':'))}}
           </div>
         </div>
         <div class="row">
@@ -76,13 +86,6 @@
       </div>
 
     </div>
-
-    <img id="qr" style="position: absolute; 
-    top: 200px; 
-    left:0; right:0;
-    margin-left:auto;
-    margin-right:auto; 
-    max-width: 70%">
 
   </ion-content>
 </ion-view>
