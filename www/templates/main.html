@@ -7,17 +7,33 @@
   	</ion-nav-bar>
   <ion-content class="has-header">
   	<div class="row" style="text-align: center;">
-    	<div class="col col-25"><i class="icon ion-android-bus" style="font-size: 100px" ng-click="ticket()"></i></div>
-  		<div class="col col-20 col-center"><i style="font-size: 12px; font-weight: bold">BUY QR<br>TICKET</i></div>
-    	<div class="col col-25"><i class="icon fa fa-ticket" style="font-size: 100px" ng-click="history()"></i></div>
-    	<div class="col col-20 col-center"><i style="font-size: 12px; font-weight: bold">TICKET<br>HISTORY</i></div>
+    	<div class="col" ng-click="ticket()">
+        <div class="row">
+          <div class="col"><i class="icon ion-android-bus" style="font-size: 100px"></i></div>
+  		    <div class="col col-center"><i style="font-size: 14px; font-weight: bold">BUY QR<br>TICKET</i></div>
+        </div>
+      </div>
+    	<div class="col" ng-click="history()">
+        <div class="row">
+          <div class="col"><i class="icon fa fa-ticket" style="font-size: 100px"></i></div>
+          <div class="col col-center"><i style="font-size: 14px; font-weight: bold">TICKET<br>HISTORY</i></div>
+        </div>
+      </div>
   	</div>
 
   	<div class="row" style="text-align: center;">
-    	<div class="col col-25"><i class="icon fa fa-history" style="font-size: 100px" ng-click="transaction()"></i></div>
-  		<div class="col col-20 col-center"><i style="font-size: 12px; font-weight: bold">TRANS-ACTION<br>HISTORY</i></div>
-    	<div class="col col-25"><i class="icon fa fa-qrcode" style="font-size: 100px" ng-click="qrcode()"></i></div>
-    	<div class="col col-20 col-center"><i style="font-size: 12px; font-weight: bold">MY QR<br>CODE</i></div>
+      <div class="col" ng-click="transaction()">
+        <div class="row">
+          <div class="col"><i class="icon fa fa-history" style="font-size: 100px"></i></div>
+  		    <div class="col col-center"><i style="font-size: 14px; font-weight: bold"">TRANS-ACTION<br>HISTORY</i></div>
+        </div>
+      </div>
+      <div class="col" ng-click="qrcode()">
+        <div class="row">
+          <div class="col"><i class="icon fa fa-qrcode" style="font-size: 100px"></i></div>
+          <div class="col col-center"><i style="font-size: 14px; font-weight: bold">MY QR<br>CODE</i></div>
+        </div>
+      </div>
     </div>
   </ion-content>
 </ion-view>

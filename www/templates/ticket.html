@@ -4,30 +4,44 @@
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
   <ion-content class="has-header">
-    <div class="card" ng-repeat="ticket in avaibleTickets" style="position: relative;">
-      <div class="item item-thumbnail-left" ng-click="buyTicket(ticket)">
-        <img src="img\ic_bus_black.png">
-        <div style="position: absolute; color: red; top: 40px; left: 45px; font-weight: bold; font-size: 20px">
-          {{ticket.tripCode}}
-        </div>
-        <div class="row item-text-wrap" style="align-items: middle">
-          <div class="col col-50 col-center">
-            <h2>{{ticket.sourceStation}}</h2>
+
+    <div class="item" ng-repeat="ticket in avaibleTickets" ng-click="buyTicket(ticket)">
+      <div class="row">
+
+        <div class="col col-center" style="max-width: 80px; min-width: 80px; min-height: 80px; margin: 0px; padding: 0px;">
+          <div style="position: relative;">
+            <div style="position: absolute; left: 50%; width: auto; transform: translateX(-50%);">
+              <img src="img\ic_bus_black.png" style="max-width: 80px;">
+            </div>
           </div>
-          <div class="col col-10 col-center" style="font-size: 20px; text-align: center"><i class="icon material-icons">directions_run</i></div>
-          <div class="col col-center">
-            <h2 style="text-align: right">{{ticket.destinationStation}}</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col col-75">
-            <h2>{{ticket.ticketLabel}}</h2>
-          </div>
-          <div class="col">
-            <h2 style="text-align: right">K {{ticket.fareQuantity}}</h2>
+          <div style="color: red; font-weight: bold; font-size: 20px; text-align: center; vertical-align: middle; line-height: 80px;">
+            {{ticket.tripCode}}
           </div>
         </div>
+
+        <div class="col">
+          <div class="row item-text-wrap">
+            <div class="col">
+              {{ticket.sourceStation}}
+            </div>
+            <div class="col col-center" style="font-size: 20px; max-width: 20px">
+              <i class="icon material-icons">directions_run</i></div>
+            <div class="col">
+              <div style="text-align: right">{{ticket.destinationStation}}</div>
+            </div>
+          </div>
+          <div class="row item-text-wrap">
+            <div class="col">
+              {{ticket.ticketLabel}}
+            </div>
+            <div class="col">
+              <div style="text-align: right">K {{ticket.fareQuantity}}</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
+
   </ion-content>
 </ion-view>

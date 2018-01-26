@@ -4,7 +4,7 @@
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
   <ion-content class="has-header">
-    <div class="row" ng-show="showDetail == false" style="font-weight: bold; border-bottom: 1px solid lightgrey; text-align:center;">
+    <div class="row" ng-show="showDetail == false" style="font-weight: bold; border-bottom: 1px solid lightgrey; text-align:center; padding: 5px">
         <div class="col">
             Ticket Date
         </div>
@@ -18,17 +18,17 @@
             Statu
         </div>
     </div>
-    <div class="row" ng-show="showDetail == false" ng-repeat="ticket in TicketsHistory" style=" border-bottom: 1px solid lightgrey; text-align:center;" ng-click="detail()">
+    <div class="row" ng-show="showDetail == false" ng-repeat="ticket in TicketsHistory" style=" border-bottom: 1px solid lightgrey; text-align:center; padding: 5px" ng-click="detail()">
         <div class="col col-center">
             {{ticket.generationDate}}
         </div>
-        <div class="col">
+        <div class="col col-center" style="max-height: 50px; min-height: 50px;">
           <div style="position: relative;">
-            <div style="position: absolute; top: 0px; left: 0px; margin-left: auto; margin-right: auto;">
-              <img src="img\ic_bus_black.png" style="max-width: 50%;">
+            <div style="position: absolute; left: 50%; width: auto; transform: translateX(-50%);">
+              <img src="img\ic_bus_black.png" style="max-width: 50px;">
             </div>
           </div>
-          <div style="color: red; margin-top: 15%; font-weight: bold;">
+          <div style="color: red; font-weight: bold; text-align: center; vertical-align: middle; line-height: 50px;">
             {{ticket.lineCode}}
           </div>
         </div>
