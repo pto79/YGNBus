@@ -27,7 +27,9 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
     qrServiceUrl: 'http://192.168.1.250:8080/afc/services/qrService/',
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  $ionicConfigProvider.views.maxCache(0);
+
   $stateProvider
 
   .state('login', {

@@ -101,11 +101,10 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('TicketCtrl', function($scope, $window, $http, $ionicPopup, $state) {
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
 
   function getValidTickets() {
-    var token = $window.sessionStorage.getItem("token");
-    var baseserver = $window.sessionStorage.getItem("server");
-
     server = baseserver + "getAvailableTickets";
     var res = $http({
         method: "POST",
@@ -205,11 +204,11 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper, $state) {
+.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, $state) {
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
 
   function getMyTickets() {
-    var baseserver = $window.sessionStorage.getItem("server");
-
     server = baseserver + "checkTicketsStatus";
     var res = $http({
         method: "POST",
@@ -227,7 +226,6 @@ angular.module('starter.controllers', ['angular-jwt'])
         console.log(data);
         if (data.resultType == 'OK') {
             $scope.TicketsHistory = data.accountInfo.tickets;
-            console.log($scope.TicketsHistory);
         }
     });
     res.error(function(data, status, header, config) {
@@ -249,11 +247,10 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('TransactionCtrl', function($scope, $window, $http, $ionicPopup) {
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
 
   function getTransaction() {
-    var token = $window.sessionStorage.getItem("token");
-    var baseserver = $window.sessionStorage.getItem("server");
-
     server = baseserver + "getTransactionsHistory";
     var res = $http({
         method: "POST",
@@ -307,19 +304,19 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper, $state) {
+.controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, $state) {
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
+$scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
+$scope.tickets = [];
+var opts = {};
 
   $scope.goMain = function() {
     $state.go('app.main');
   }
 
   function getActiveTicket() {
-    var token = $window.sessionStorage.getItem("token");
-    var tokenPayload = jwtHelper.decodeToken(token);
-    var baseserver = $window.sessionStorage.getItem("server");
-    $scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
-    $scope.activeTickets = [];
-    
+   
     server = baseserver + "checkMyTickets";
     var res = $http({
         method: "POST",
@@ -335,18 +332,15 @@ angular.module('starter.controllers', ['angular-jwt'])
     res.success(function(data, status, header, config) {
         console.log(data);
         if (data.resultType == 'OK') {
-          if($scope.viewStatus == 0)
             angular.forEach(data.accountInfo.tickets, function(ticket) {
-                if (ticket.status == 'UNUSED') 
-                  $scope.activeTickets.push(ticket);
+                if (ticket.status == 'UNUSED') {
+                  $scope.tickets.push(ticket);
+                  QRCode.toDataURL(ticket.ticketContent, opts, function (err, url) {
+                    if (err) throw err
+                    ticket.qrUrl = url;
+                  })
+                }
             });
-          else if($scope.viewStatus == 1)
-            $scope.activeTickets = data.accountInfo.tickets;
-
-            QRCode.toDataURL(tokenPayload.jti, function (err, url) {
-              if (err) throw err
-              $scope.qrUrl = url;
-            })
         }
     });
     res.error(function(data, status, header, config) {
@@ -358,18 +352,55 @@ angular.module('starter.controllers', ['angular-jwt'])
     });
   }
 
-  getActiveTicket();
+  function getMyTickets() {
+    server = baseserver + "checkTicketsStatus";
+    var res = $http({
+        method: "POST",
+        url: server,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: {
+            token: token,
+            lastTicketSerial: 0,
+            ticketSerials: [0]
+        }
+    })
+    res.success(function(data, status, header, config) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+            $scope.tickets = data.accountInfo.tickets;
+            angular.forEach(data.accountInfo.tickets, function(ticket) {
+                QRCode.toDataURL(ticket.ticketContent, opts, function (err, url) {
+                  if (err) throw err
+                  ticket.qrUrl = url;
+                })
+            });
+        }
+    });
+    res.error(function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
+  }
+
+  if($scope.viewStatus == 0)
+    getActiveTicket();
+  else if($scope.viewStatus == 1)
+    getMyTickets();
 })
 
 
 .controller('PasswordCtrl', function($scope, $window, $http, $ionicPopup, $state){
-  var token = $window.sessionStorage.getItem("token");
-  var baseserver = $window.sessionStorage.getItem("server");
-  var oldpassword = $window.sessionStorage.getItem("oldpassword");
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
+var oldpassword = $window.sessionStorage.getItem("oldpassword");
+$scope.input = {};
 
   $scope.changePass = function() {
-    $scope.input = {};
-
     console.log($scope.input);
     if($scope.input.oldpassword == undefined) {
       document.getElementById("oldpassword").setCustomValidity("This field is required");
@@ -448,10 +479,10 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 
 .controller('AccountCtrl', function($scope, $window, $http, $ionicPopup, $state){
+var token = $window.sessionStorage.getItem("token");
+var baseserver = $window.sessionStorage.getItem("server");
 
   function getAccount() {
-    var token = $window.sessionStorage.getItem("token");
-    var baseserver = $window.sessionStorage.getItem("server");
     $scope.input = {};
 
     server = baseserver + "getPassengerInfo";

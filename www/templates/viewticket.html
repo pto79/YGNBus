@@ -10,9 +10,9 @@
       New Ticket
     </div>
     <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 1">
-      Ticket(s) : {{activeTickets.length}}
+      Ticket(s) : {{tickets.length}}
     </div>
-    <div style="position: relative;" ng-repeat="ticket in activeTickets">
+    <div style="position: relative;" ng-repeat="ticket in tickets">
       <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
 
       <div style="position: absolute; top: 0px; left: 0px; margin-top: 50px; margin-left: 20px;">
@@ -46,7 +46,7 @@
     </div>
 
     <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
-        <img ng-src={{qrUrl}} style="max-width: 100%; display: block; margin: auto;">
+        <img ng-src={{ticket.qrUrl}} style="max-width: 100%; display: block; margin: auto;">
     </div>
     <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
         <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
