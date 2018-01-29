@@ -45,22 +45,22 @@
       </div>
     </div>
 
-    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-60%) translateX(-50%); width: 80%;">
         <img ng-src={{ticket.qrUrl}} style="max-width: 100%; display: block; margin: auto;">
     </div>
-    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); width: 80%;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-60%) translateX(-50%); width: 80%;">
         <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
         <img src="img\img_refund_en.png" style="max-width: 100%" ng-if="ticket.status == 'REFUND'">
         <img src="img\img_used_en.png" style="max-width: 100%" ng-if="ticket.status == 'USED'">
         <img src="img\img_disabled_en.png" style="max-width: 100%" ng-if="ticket.status == 'DISABLED'">
     </div>
 
-      <div style="position: absolute; top: 0px; margin-top: 90%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
+      <div style="position: absolute; top: 0px; margin-top: 88%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
         <div class="row">
           <div class="col col-33">
             Purchase
           </div>
-          <div class="col col-20">
+          <div class="col" style="max-width: 50px">
             <i class="icon material-icons">add_shopping_cart</i>
           </div>
           <div class="col">
@@ -71,7 +71,7 @@
           <div class="col col-33">
             Valid Till
           </div>
-          <div class="col col-20">
+          <div class="col" style="max-width: 50px">
             <i class="icon material-icons">access_time</i>
           </div>
           <div class="col">
@@ -82,7 +82,7 @@
           <div class="col col-33">
             Bus Code
           </div>
-          <div class="col col-20">
+          <div class="col" style="max-width: 50px">
             <i class="icon material-icons">directions_bus</i>
           </div>
         </div>
@@ -90,7 +90,7 @@
           <div class="col col-33">
             Used
           </div>
-          <div class="col col-20">
+          <div class="col" style="max-width: 50px">
             <i class="icon material-icons">confirmation_number</i>
           </div>
         </div>
