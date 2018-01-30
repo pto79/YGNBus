@@ -14,9 +14,11 @@
           </button>        
       </div>
       <div>Mobile Application server address: </div>
-      <label class="item item-input">
-          <input ng-model="input.address" type="text">
-          </input>
+      <label class="item item-select">
+        <select style="max-width: 100%; right: auto; direction: ltr; padding-left: 0px" ng-model="input.address">
+          <option>http://192.168.1.250:8080/afc/services/qrService/</option>
+          <option>http://192.168.1.117:8080/afc/services/external/mobileapplication/</option>
+        </select>
       </label>
       <br><img src="img\logo_msi.png" style="margin: auto; display: block; width: 60%">
   </ion-content>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="lib/qrcode/build/qrcode.js"></script>
+    <script src="lib/angular-jwt/dist/angular-jwt.min.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+
+  </head>
+  <body ng-app="starter">
+  <ion-content ng-app="starter" ng-controller="ViewTicketCtrl">
+    <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 0">
+      New Ticket
+    </div>
+    <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 1">
+      Ticket(s) : {{tickets.length}}
+    </div>
+    <div class="item" style="font-weight: bold; text-align: center; font-size: 20px" ng-if="viewStatus == 2">
+      <i ng-if="tickets.length>0">Active Ticket(s) : {{tickets.length}}</i>
+      <i ng-if="tickets.length==0">No Active QR Ticket is available.<br>Please Buy a QR Ticket.</i>
+    </div>
+    <div style="position: relative;" ng-repeat="ticket in tickets">
+      <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
+
+      <div style="position: absolute; top: 0px; left: 0px; margin-top: 50px; margin-left: 20px;">
+        <div class="row">
+          <div class="col col-center" style="max-width: 100px; min-width: 100px; min-height: 100px;">
+            <div style="position: relative;">
+              <div style="position: absolute; left: 50%; width: auto; transform: translateX(-50%);">
+                <img src="img\ic_bus_black.png" style="max-width: 100px;">
+              </div>
+            </div>
+            <div style="color: red; font-weight: bold; font-size: 30px; text-align: center; vertical-align: middle; line-height: 100px;">
+              {{ticket.lineCode}}
+            </div>
+          </div>
+          <div class="col col-center" style="font-size: 18px">
+            <div class="row">
+              <div class="col">
+                {{ticket.ticketLabel}}
+              </div>
+            </div>
+          <div class="row">
+            <div class="col col-50">
+              {{ticket.status}}
+            </div>
+            <div class="col">
+              K {{ticket.fare}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-60%) translateX(-50%); width: 80%;">
+        <img ng-src={{ticket.qrUrl}} style="max-width: 100%; display: block; margin: auto;">
+    </div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-60%) translateX(-50%); width: 80%;">
+        <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
+        <img src="img\img_refund_en.png" style="max-width: 100%" ng-if="ticket.status == 'REFUND'">
+        <img src="img\img_used_en.png" style="max-width: 100%" ng-if="ticket.status == 'USED'">
+        <img src="img\img_disabled_en.png" style="max-width: 100%" ng-if="ticket.status == 'DISABLED'">
+    </div>
+
+      <div style="position: absolute; top: 0px; margin-top: 88%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">
+        <div class="row">
+          <div class="col col-33">
+            Purchase
+          </div>
+          <div class="col" style="max-width: 50px">
+            <i class="icon material-icons">add_shopping_cart</i>
+          </div>
+          <div class="col">
+            {{ticket.generationDate.substr(0,ticket.generationDate.lastIndexOf(':'))}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Valid Till
+          </div>
+          <div class="col" style="max-width: 50px">
+            <i class="icon material-icons">access_time</i>
+          </div>
+          <div class="col">
+            {{ticket.expirationDate.substr(0,ticket.expirationDate.lastIndexOf(':'))}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Bus Code
+          </div>
+          <div class="col" style="max-width: 50px">
+            <i class="icon material-icons">directions_bus</i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            Used
+          </div>
+          <div class="col" style="max-width: 50px">
+            <i class="icon material-icons">confirmation_number</i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </ion-content>
+  </body>
+</html>

@@ -80,6 +80,7 @@ angular.module('starter.controllers', ['angular-jwt'])
 
 .controller('MainCtrl', function($scope, $window, $state) {
   $scope.balance = $window.sessionStorage.getItem("balance");
+  $window.sessionStorage.setItem("viewStatus", 2);
 
   $scope.ticket = function() {
     $state.go('app.ticket');
@@ -97,6 +98,8 @@ angular.module('starter.controllers', ['angular-jwt'])
     $state.go('app.qrcode');
   }
 
+  $scope.slide = {};  
+  $scope.slide.template = "templates/ticketdetail.html";
 })
 
 
@@ -387,7 +390,7 @@ var opts = {};
     });
   }
 
-  if($scope.viewStatus == 0)
+  if($scope.viewStatus == 0 || $scope.viewStatus == 2)
     getActiveTicket();
   else if($scope.viewStatus == 1)
     getMyTickets();
