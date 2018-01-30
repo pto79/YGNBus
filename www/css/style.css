@@ -11,3 +11,6 @@ div.col{
 .slider {
   height: 100%;
 }
+.slider-pager-page.active {
+  color: red !important;
+}

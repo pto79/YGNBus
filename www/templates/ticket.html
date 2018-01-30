@@ -4,8 +4,8 @@
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
   <ion-content class="has-header">
-
-    <div class="item" ng-repeat="ticket in avaibleTickets" ng-click="buyTicket(ticket)">
+    <ion-list>
+    <ion-item ng-repeat="ticket in avaibleTickets" ng-click="buyTicket(ticket)">
       <div class="row">
         <div class="col col-center" style="max-width: 80px; min-width: 80px; min-height: 80px;">
           <div style="position: relative;">
@@ -37,9 +37,8 @@
             </div>
           </div>
         </div>
-
       </div>
-    </div>
-
+    </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

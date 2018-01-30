@@ -394,6 +394,19 @@ var opts = {};
     getActiveTicket();
   else if($scope.viewStatus == 1)
     getMyTickets();
+
+  $scope.$on('$ionicView.beforeEnter', function(e) {
+    $scope.tickets = [];
+    $scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
+    console.log($scope.viewStatus);
+    if($scope.viewStatus == 0 || $scope.viewStatus == 2)
+      getActiveTicket();
+    else if($scope.viewStatus == 1)
+      getMyTickets();
+  })
+
+  $scope.slide = {};  
+  $scope.slide.template = "templates/ticketdetail.html";  
 })
 
 

@@ -28,7 +28,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-  $ionicConfigProvider.views.maxCache(0);
+  //$ionicConfigProvider.views.maxCache(0);
 
   $stateProvider
 
