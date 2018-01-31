@@ -1,51 +1,48 @@
 angular.module('starter.controllers', ['angular-jwt'])
 
-.controller('LoginCtrl', function($scope, $ionicPopup, $window, $http, $state, buildconfig) {
-    $scope.input = [];
-    $scope.input.address = buildconfig.qrServiceUrl;
-    $scope.input.username = "marco161763";
-    $scope.input.password = "asdfg";
+.controller('LoginCtrl', function($scope, $ionicPopup, $window, $state, buildconfig, QRService, $ionicLoading) {
+  $scope.input = {};
+  $scope.input.address = buildconfig.qrServiceUrl;
+  $scope.input.username = "marco161763";
+  $scope.input.password = "asdfg";
 
-    $scope.login = function() {
-      var server = $scope.input.address + "login";
-      var res = $http({
-          method: "POST",
-          url: server,
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          data: {
-              username: $scope.input.username,
-              password: $scope.input.password,
-              lastTicketSerial: '2100059'
-          }
-      })
-      res.success(function(data, status, header, config) {
-          console.log(data);
-          if (data.resultType == 'OK') {
-              $window.sessionStorage.setItem("token", data.token);
-              $window.sessionStorage.setItem("fullName", data.accountInfo.fullName);
-              $window.sessionStorage.setItem("gender", data.accountInfo.gender);
-              $window.sessionStorage.setItem("balance", data.accountInfo.balance);
-              $window.sessionStorage.setItem("freezedAmount", data.accountInfo.freezedAmount);
-              $window.sessionStorage.setItem("tickets", data.accountInfo.tickets);
-              $window.sessionStorage.setItem("server", $scope.input.address);
-              $window.sessionStorage.setItem("oldpassword", $scope.input.password);
-              $state.go('app.main');                
-          } else $ionicPopup.alert({
-              title: 'Login failed!',
-              template: 'Please check your credentials!',
-              okText: 'OK'
-          });
-      });
-      res.error(function(data, status, header, config) {
-          var alertPopup = $ionicPopup.alert({
-              title: 'Server error!',
-              template: 'Please check your internet connection!',
-              okText: 'OK'
-          });
-      });
-    }
+  $scope.login = function() {
+    var req = {}
+    req.service = "login";
+    req.data = {
+            username: $scope.input.username,
+            password: $scope.input.password,
+            lastTicketSerial: '2100059'
+        };
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
+    })
+    QRService.send(req).then(function(data) {
+      $ionicLoading.hide();
+        if (data.resultType == 'OK') {
+            $window.sessionStorage.setItem("token", data.token);
+            $window.sessionStorage.setItem("fullName", data.accountInfo.fullName);
+            //$window.sessionStorage.setItem("gender", data.accountInfo.gender);
+            $window.sessionStorage.setItem("balance", data.accountInfo.balance);
+            //$window.sessionStorage.setItem("freezedAmount", data.accountInfo.freezedAmount);
+            //$window.sessionStorage.setItem("tickets", data.accountInfo.tickets);
+            //$window.sessionStorage.setItem("server", $scope.input.address);
+            $window.sessionStorage.setItem("oldpassword", $scope.input.password);
+            $state.go('app.main');                
+        } else $ionicPopup.alert({
+            title: 'Login failed!',
+            template: 'Please check your credentials!',
+            okText: 'OK'
+        });
+    }, function(error) {
+      $ionicLoading.hide();
+        $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
+  }
 })
 
 
@@ -78,60 +75,132 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('MainCtrl', function($scope, $window, $state) {
+.controller('MainCtrl', function($scope, $window, $state, QRService, $ionicLoading, $interval) {
+  var token = $window.sessionStorage.getItem("token");
   $scope.balance = $window.sessionStorage.getItem("balance");
-  $window.sessionStorage.setItem("viewStatus", 2);
+  var AvailableTickets = false;
+  var TicketsStatus = false;
+  var TransactionsHistory = false;
+
+  function getAvailableTickets() {
+    var req = {}
+    req.service = "getAvailableTickets";
+    req.data = {
+            token: token
+        };
+    QRService.send(req).then(function(data) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+          $window.localStorage.setItem("avaibleTickets", JSON.stringify(data.avaibleTickets));
+          AvailableTickets = true;
+        }
+    }, function(data, status, header, config) {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });    
+  }
 
   $scope.ticket = function() {
-    $state.go('app.ticket');
+    if(AvailableTickets) {
+      $state.go('app.ticket');
+    } else {
+      getAvailableTickets();
+    }
   }
 
-  $scope.history = function() {
-    $state.go('app.history');
-  }
-
-  $scope.transaction = function() {
-    $state.go('app.transaction');
-  }
-
-  $scope.qrcode = function() {
-    $state.go('app.qrcode');
-  }
-
-  $scope.slide = {};  
-  $scope.slide.template = "templates/ticketdetail.html";
-})
-
-
-.controller('TicketCtrl', function($scope, $window, $http, $ionicPopup, $state) {
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-
-  function getValidTickets() {
-    server = baseserver + "getAvailableTickets";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token
-        }
-    })
-    res.success(function(data, status, header, config) {
+  function checkTicketsStatus() {
+    var req = {}
+    req.service = "checkTicketsStatus";
+    req.data = {
+            token: token,
+            lastTicketSerial: 0,
+            ticketSerials: [0]
+        };
+    QRService.send(req).then(function(data) {
         console.log(data);
-        if (data.resultType == 'OK')
-            $scope.avaibleTickets = data.avaibleTickets;
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
+        if (data.resultType == 'OK') {
+            $window.localStorage.setItem("ticketsStatus", JSON.stringify(data.accountInfo.tickets));
+            $window.sessionStorage.setItem("balance", data.accountInfo.balance);
+            TicketsStatus = true;
+            $scope.tickets = [];
+            angular.forEach(data.accountInfo.tickets, function(ticket) {
+                if (ticket.status == 'UNUSED') {
+                  $scope.tickets.push(ticket);
+                  QRCode.toDataURL(ticket.ticketContent, {}, function (err, url) {
+                    if (err) throw err
+                    ticket.qrUrl = url;
+                  })
+                }
+            });
+        }
+    }, function(data, status, header, config) {
+        $ionicPopup.alert({
             title: 'Server error!',
             template: 'Please check your internet connection!',
             okText: 'OK'
         });
     });
   }
+
+  $scope.history = function() {
+    if(TicketsStatus) {
+      $state.go('app.history');
+    } else {
+      checkTicketsStatus();
+    }
+  }
+
+  function getTransactionsHistory() {
+    var req = {}
+    req.service = "getTransactionsHistory";
+    req.data = {
+            token: token
+        };
+    QRService.send(req).then(function(data) {
+        console.log(data);
+        if (data.resultType == 'OK') {
+            $window.localStorage.setItem("transactionsHistory", JSON.stringify(data.transactions));
+            TransactionsHistory = true;
+        }
+    }, function(data, status, header, config) {
+        $ionicPopup.alert({
+            title: 'Server error!',
+            template: 'Please check your internet connection!',
+            okText: 'OK'
+        });
+    });
+  }
+
+  $scope.transaction = function() {
+    if(TransactionsHistory) {
+      $state.go('app.transaction');
+    } else {
+      getTransactionsHistory();
+    }
+  }
+
+  $scope.qrcode = function() {
+    $state.go('app.qrcode');
+  }
+
+  getAvailableTickets();
+  getTransactionsHistory();
+  checkTicketsStatus();
+
+  $interval(function() {
+    checkTicketsStatus();
+  }, 10000)
+
+})
+
+
+.controller('TicketCtrl', function($scope, $window, $ionicPopup, $state, QRService, $ionicLoading) {
+  var token = $window.sessionStorage.getItem("token");
+  var localTickets = localStorage.getItem("avaibleTickets");
+  $scope.avaibleTickets = JSON.parse(localTickets);
 
   $scope.buyTicket = function(ticket) {
     var tmp = 'Bus Number: ' + ticket.tripCode + '<br>' 
@@ -147,30 +216,30 @@ var baseserver = $window.sessionStorage.getItem("server");
 
     confirmPopup.then(function(res) {
      if(res) {
-        server = baseserver + "buyTicket";
-        var res = $http({
-            method: "POST",
-            url: server,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                token: token,
-                tripCode: ticket.tripCode,
-                ticketType: ticket.ticketCode,
-                lastTicketSerial: 0
-            }
-        })
-        res.success(function(data, status, header, config) {
+          var req = {}
+          req.service = "buyTicket";
+          req.data = {
+                      token: token,
+                      tripCode: ticket.tripCode,
+                      ticketType: ticket.ticketCode,
+                      lastTicketSerial: 0
+              };
+          $ionicLoading.show({
+            template: '<ion-spinner></ion-spinner>'
+          })
+          QRService.send(req).then(function(data) {
+            $ionicLoading.hide();
             console.log(data);
             if (data.resultType == 'OK') {
 
-                if(data.ticketResultStatus == "OK")
+                if(data.ticketResultStatus == "OK") {
+                  $window.localStorage.setItem("ticketsStatus", JSON.stringify(data.accountInfo.tickets));
                   var alertPopup = $ionicPopup.alert({
                         title: '<img src="img\\ic_bus_ok.png" width="100%">',
                         template: 'OK',
                         okText: 'View Ticket'
                     });
+                }
 
                 if(data.ticketResultStatus == "NOT_ALLOWED_MORE_TICKET")
                   var alertPopup = $ionicPopup.alert({
@@ -186,16 +255,14 @@ var baseserver = $window.sessionStorage.getItem("server");
                   });
 
             } 
-        });
-        res.error(function(data, status, header, config) {
-            var alertPopup = $ionicPopup.alert({
+        }, function(data, status, header, config) {
+          $ionicLoading.hide();
+            $ionicPopup.alert({
                 title: 'Server error!',
                 template: 'Please check your internet connection!',
                 okText: 'OK'
             });
         });
-
-
      } else {
         console.log('Not sure!');
      }
@@ -203,88 +270,27 @@ var baseserver = $window.sessionStorage.getItem("server");
 
   }
 
-  getValidTickets();
 })
 
 
-.controller('HistoryCtrl', function($scope, $window, $http, $ionicPopup, $state) {
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-
-  function getMyTickets() {
-    server = baseserver + "checkTicketsStatus";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token,
-            lastTicketSerial: 0,
-            ticketSerials: [0]
-        }
-    })
-    res.success(function(data, status, header, config) {
-        console.log(data);
-        if (data.resultType == 'OK') {
-            $scope.TicketsHistory = data.accountInfo.tickets;
-        }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
-    });
-  }
+.controller('HistoryCtrl', function($scope, $window, $state) {
+  var ticketsStatus = localStorage.getItem("ticketsStatus");
+  $scope.TicketsHistory = JSON.parse(ticketsStatus);
 
   $scope.detail = function() {
     $window.sessionStorage.setItem("viewStatus", 1);  //from Ticket History
     $state.go('app.viewticket');
   }
-
-  getMyTickets();
 })
 
 
-.controller('TransactionCtrl', function($scope, $window, $http, $ionicPopup) {
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-
-  function getTransaction() {
-    server = baseserver + "getTransactionsHistory";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token
-        }
-    })
-    res.success(function(data, status, header, config) {
-        console.log(data);
-        if (data.resultType == 'OK') {
-            $scope.TransactionsHistory = data.transactions;
-        }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
-    });
-  }
-
-  getTransaction();
+.controller('TransactionCtrl', function($scope, $window) {
+  var transactionsHistory = localStorage.getItem("transactionsHistory");
+  $scope.TransactionsHistory = JSON.parse(transactionsHistory);
 })
 
 
-.controller('QRCodeCtrl', function($scope, $window, $http, $ionicPopup, jwtHelper) {
+.controller('QRCodeCtrl', function($scope, $window, jwtHelper) {
   var token = $window.sessionStorage.getItem("token");  
   var tokenPayload = jwtHelper.decodeToken(token);
   $scope.fullName = window.sessionStorage.getItem("fullName");
@@ -307,114 +313,53 @@ var baseserver = $window.sessionStorage.getItem("server");
 })
 
 
-.controller('ViewTicketCtrl', function($scope, $window, $http, $ionicPopup, $state) {
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-$scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
-$scope.tickets = [];
-var opts = {};
+.controller('ViewTicketCtrl', function($scope, $window, $ionicPopup, $state) {
 
   $scope.goMain = function() {
     $state.go('app.main');
   }
 
-  function getActiveTicket() {
-   
-    server = baseserver + "checkMyTickets";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token,
-            lastTicketSerial: 0
-        }
-    })
-    res.success(function(data, status, header, config) {
-        console.log(data);
-        if (data.resultType == 'OK') {
-            angular.forEach(data.accountInfo.tickets, function(ticket) {
-                if (ticket.status == 'UNUSED') {
-                  $scope.tickets.push(ticket);
-                  QRCode.toDataURL(ticket.ticketContent, opts, function (err, url) {
-                    if (err) throw err
-                    ticket.qrUrl = url;
-                  })
-                }
-            });
-        }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
-    });
-  }
-
   function getMyTickets() {
-    server = baseserver + "checkTicketsStatus";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token,
-            lastTicketSerial: 0,
-            ticketSerials: [0]
-        }
-    })
-    res.success(function(data, status, header, config) {
-        console.log(data);
-        if (data.resultType == 'OK') {
-            $scope.tickets = data.accountInfo.tickets;
-            angular.forEach(data.accountInfo.tickets, function(ticket) {
-                QRCode.toDataURL(ticket.ticketContent, opts, function (err, url) {
-                  if (err) throw err
-                  ticket.qrUrl = url;
-                })
-            });
-        }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
-    });
-  }
+    $scope.ticketsStatus = localStorage.getItem("ticketsStatus");
+    var localTickets = JSON.parse($scope.ticketsStatus);
+    $scope.tickets = [];
 
-  if($scope.viewStatus == 0 || $scope.viewStatus == 2)
-    getActiveTicket();
-  else if($scope.viewStatus == 1)
-    getMyTickets();
+    if($window.sessionStorage.getItem("viewStatus") == 0) {
+      console.log('view active ticket');
+      angular.forEach(localTickets, function(ticket) {
+        if(ticket.status == "UNUSED") {
+          QRCode.toDataURL(ticket.ticketContent, {}, function (err, url) {
+            if (err) throw err
+            ticket.qrUrl = url;
+          })
+          $scope.tickets.push(ticket);
+        }
+      });
+    }
+    else if($window.sessionStorage.getItem("viewStatus") == 1) {
+      console.log('view ticket history');
+      angular.forEach(localTickets, function(ticket) {
+          QRCode.toDataURL(ticket.ticketContent, {}, function (err, url) {
+            if (err) throw err
+            ticket.qrUrl = url;
+          })
+      });
+      $scope.tickets = localTickets;
+    }
+  }
 
   $scope.$on('$ionicView.beforeEnter', function(e) {
-    $scope.tickets = [];
-    $scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
-    console.log($scope.viewStatus);
-    if($scope.viewStatus == 0 || $scope.viewStatus == 2)
-      getActiveTicket();
-    else if($scope.viewStatus == 1)
-      getMyTickets();
+    getMyTickets();
   })
 
-  $scope.slide = {};  
-  $scope.slide.template = "templates/ticketdetail.html";  
+  getMyTickets();
 })
 
 
-.controller('PasswordCtrl', function($scope, $window, $http, $ionicPopup, $state){
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
-var oldpassword = $window.sessionStorage.getItem("oldpassword");
-$scope.input = {};
+.controller('PasswordCtrl', function($scope, $window, $ionicPopup, $state, QRService, $ionicLoading){
+  var token = $window.sessionStorage.getItem("token");
+  var oldpassword = $window.sessionStorage.getItem("oldpassword");
+  $scope.input = {};
 
   $scope.changePass = function() {
     console.log($scope.input);
@@ -454,20 +399,18 @@ $scope.input = {};
       document.getElementById("newpassword2").setCustomValidity("");
     }
 
-    server = baseserver + "changePassword";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
+    var req = {}
+    req.service = "changePassword";
+    req.data = {
             token: token,
             oldPassword: $scope.input.oldpassword,
             newPassword: $scope.input.newpassword
-        }
+        };
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
     })
-    res.success(function(data, status, header, config) {
+    QRService.send(req).then(function(data) {
+      $ionicLoading.hide();
         console.log(data);
         if (data.resultType == 'OK') {
           $window.sessionStorage.setItem("token", data.newToken);
@@ -481,9 +424,9 @@ $scope.input = {};
              $state.go('app.main');
           });
         }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
+    }, function(data, status, header, config) {
+      $ionicLoading.hide();
+        $ionicPopup.alert({
             title: 'Server error!',
             template: 'Please check your internet connection!',
             okText: 'OK'
@@ -494,31 +437,29 @@ $scope.input = {};
 })
 
 
-.controller('AccountCtrl', function($scope, $window, $http, $ionicPopup, $state){
-var token = $window.sessionStorage.getItem("token");
-var baseserver = $window.sessionStorage.getItem("server");
+.controller('AccountCtrl', function($scope, $window, $ionicPopup, $state, QRService, $ionicLoading){
+  var token = $window.sessionStorage.getItem("token");
 
   function getAccount() {
     $scope.input = {};
 
-    server = baseserver + "getPassengerInfo";
-    var res = $http({
-        method: "POST",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            token: token        }
+    var req = {}
+    req.service = "getPassengerInfo";
+    req.data = {
+            token: token
+        };
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
     })
-    res.success(function(data, status, header, config) {
+    QRService.send(req).then(function(data) {
+      $ionicLoading.hide();
         console.log(data);
         if (data.resultType == 'OK') {
           $scope.input = data;
         }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
+    }, function(data, status, header, config) {
+      $ionicLoading.hide();
+        $ionicPopup.alert({
             title: 'Server error!',
             template: 'Please check your internet connection!',
             okText: 'OK'
@@ -544,21 +485,18 @@ var baseserver = $window.sessionStorage.getItem("server");
       document.getElementById("phonenumber").setCustomValidity("");
     }
 
-    server = baseserver + "editInfo";
-    var res = $http({
-        method: "POST",
-        //url: buildconfig.qrServiceUrl + "login",
-        url: server,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
+    var req = {}
+    req.service = "editInfo";
+    req.data = {
             token: token,
             phoneNumber: $scope.input.phoneNumber,
             email: $scope.input.email
-        }
+        };
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
     })
-    res.success(function(data, status, header, config) {
+    QRService.send(req).then(function(data) {
+      $ionicLoading.hide();
         console.log(data);
         if (data.resultType == 'OK') {
           var alertPopup = $ionicPopup.alert({
@@ -570,9 +508,9 @@ var baseserver = $window.sessionStorage.getItem("server");
              $state.go('app.main');
           });
         }
-    });
-    res.error(function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
+    }, function(data, status, header, config) {
+      $ionicLoading.hide();
+        $ionicPopup.alert({
             title: 'Server error!',
             template: 'Please check your internet connection!',
             okText: 'OK'
