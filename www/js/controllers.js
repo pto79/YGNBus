@@ -3,7 +3,7 @@ function errorAlert(msg,duration)
   var el = document.createElement("div");
   el.setAttribute("class", "msg");
   el.setAttribute("style", "padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px");
-  el.innerHTML = msg;
+  el.innerHTML = "Unable to connect server";
   setTimeout(function(){
     el.parentNode.removeChild(el);
   },3900);
