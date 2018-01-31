@@ -14,3 +14,28 @@ div.col{
 .slider-pager-page.active {
   color: red !important;
 }
+.msg {
+	position: absolute;
+	top: 80%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: black;
+	color: white;
+	border-radius: 20px;
+	-webkit-animation-name: msgFade; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+	animation-name: msgFade;
+	animation-duration: 2s;
+	animation-delay: 2s;
+	//animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes msgFade {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+@keyframes msgFade {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}

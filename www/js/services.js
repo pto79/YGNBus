@@ -9,6 +9,7 @@ angular.module('starter.services', [])
       $http({
         method: "POST",
         url: buildconfig.qrServiceUrl + req.service,
+        timeout: 5000,
         headers: {'Content-Type': 'application/json'},
         data: req.data 
       }).then(function(res) {

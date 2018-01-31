@@ -1,3 +1,16 @@
+function errorAlert(msg,duration)
+{
+  var el = document.createElement("div");
+  el.setAttribute("class", "msg");
+  el.setAttribute("style", "padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px");
+  el.innerHTML = msg;
+  setTimeout(function(){
+    el.parentNode.removeChild(el);
+  },3900);
+  var network = document.getElementsByName("network");
+  network[0].appendChild(el);
+}  
+
 angular.module('starter.controllers', ['angular-jwt'])
 
 .controller('LoginCtrl', function($scope, $ionicPopup, $window, $state, buildconfig, QRService, $ionicLoading) {
@@ -36,11 +49,7 @@ angular.module('starter.controllers', ['angular-jwt'])
         });
     }, function(error) {
       $ionicLoading.hide();
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+      errorAlert("Can't connect to server",4000);
     });
   }
 })
@@ -95,11 +104,7 @@ angular.module('starter.controllers', ['angular-jwt'])
           AvailableTickets = true;
         }
     }, function(data, status, header, config) {
-        var alertPopup = $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+        errorAlert("Can't connect to server",4000);
     });    
   }
 
@@ -137,11 +142,7 @@ angular.module('starter.controllers', ['angular-jwt'])
             });
         }
     }, function(data, status, header, config) {
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+        errorAlert("Can't connect to server",4000);
     });
   }
 
@@ -166,11 +167,7 @@ angular.module('starter.controllers', ['angular-jwt'])
             TransactionsHistory = true;
         }
     }, function(data, status, header, config) {
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+        errorAlert("Can't connect to server",4000);
     });
   }
 
@@ -225,7 +222,9 @@ angular.module('starter.controllers', ['angular-jwt'])
                       lastTicketSerial: 0
               };
           $ionicLoading.show({
-            template: '<ion-spinner></ion-spinner>'
+            template: '<ion-spinner></ion-spinner>',
+            noBackdrop: true,
+            hideOnStateChange: true
           })
           QRService.send(req).then(function(data) {
             $ionicLoading.hide();
@@ -257,11 +256,7 @@ angular.module('starter.controllers', ['angular-jwt'])
             } 
         }, function(data, status, header, config) {
           $ionicLoading.hide();
-            $ionicPopup.alert({
-                title: 'Server error!',
-                template: 'Please check your internet connection!',
-                okText: 'OK'
-            });
+          errorAlert("Can't connect to server",4000);
         });
      } else {
         console.log('Not sure!');
@@ -313,7 +308,7 @@ angular.module('starter.controllers', ['angular-jwt'])
 })
 
 
-.controller('ViewTicketCtrl', function($scope, $window, $ionicPopup, $state) {
+.controller('ViewTicketCtrl', function($scope, $window, $state) {
 
   $scope.goMain = function() {
     $state.go('app.main');
@@ -426,11 +421,7 @@ angular.module('starter.controllers', ['angular-jwt'])
         }
     }, function(data, status, header, config) {
       $ionicLoading.hide();
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+      errorAlert("Can't connect to server",4000);
     });
   }
 
@@ -459,11 +450,7 @@ angular.module('starter.controllers', ['angular-jwt'])
         }
     }, function(data, status, header, config) {
       $ionicLoading.hide();
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+      errorAlert("Can't connect to server",4000);
     });
   }
 
@@ -510,11 +497,7 @@ angular.module('starter.controllers', ['angular-jwt'])
         }
     }, function(data, status, header, config) {
       $ionicLoading.hide();
-        $ionicPopup.alert({
-            title: 'Server error!',
-            template: 'Please check your internet connection!',
-            okText: 'OK'
-        });
+      errorAlert("Can't connect to server",4000);
     });
   }
 
