@@ -18,6 +18,8 @@ div.col{
 	position: absolute;
 	top: 80%;
 	left: 50%;
+	width: 55%;
+	text-align: center;
 	transform: translateX(-50%);
 	background-color: black;
 	color: white;

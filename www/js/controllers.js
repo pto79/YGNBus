@@ -7,7 +7,7 @@ function errorAlert(msg,duration)
   setTimeout(function(){
     el.parentNode.removeChild(el);
   },3900);
-  var network = document.getElementsByName("network");
+  var network = document.getElementsByTagName("ion-view");
   network[0].appendChild(el);
 }  
 
