@@ -3,7 +3,7 @@
     <ion-nav-title>Balance: K {{balance}}</ion-nav-title>
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
-  <ion-content class="has-header">
+  <ion-content class="has-header" name="forMsg">
     <ion-list>
     <ion-item ng-repeat="ticket in avaibleTickets" ng-click="buyTicket(ticket)">
       <div class="row">

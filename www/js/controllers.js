@@ -7,8 +7,9 @@ function errorAlert(msg,duration)
   setTimeout(function(){
     el.parentNode.removeChild(el);
   },3900);
-  var network = document.getElementsByTagName("ion-view");
-  network[0].appendChild(el);
+  //var network = document.getElementsByTagName("ion-content");
+  var network = document.getElementsByName("forMsg");
+  network[network.length-1].appendChild(el);
 }  
 
 angular.module('starter.controllers', ['angular-jwt'])
