@@ -21,6 +21,7 @@ angular.module('starter.controllers', ['angular-jwt'])
   $scope.input.password = "asdfg";
 
   $scope.login = function() {
+    $window.sessionStorage.setItem("server", $scope.input.address);
     var req = {}
     req.service = "login";
     req.data = {
@@ -316,6 +317,7 @@ angular.module('starter.controllers', ['angular-jwt'])
   }
 
   function getMyTickets() {
+    $scope.viewStatus = $window.sessionStorage.getItem("viewStatus");
     $scope.ticketsStatus = localStorage.getItem("ticketsStatus");
     var localTickets = JSON.parse($scope.ticketsStatus);
     $scope.tickets = [];

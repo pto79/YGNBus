@@ -44,11 +44,15 @@
       <i ng-if="tickets.length==0">No Active QR Ticket is available.<br>Please Buy a QR Ticket.</i>
     </div>
     <div style="position: relative;" ng-repeat="ticket in tickets">
-      <img src='img\bg_msi_ticket.png'/ style="max-width: 100%">
+      <img src='img\bg_msi_ticket.png'
+        style="max-width: 100%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;">
 
-      <div style="position: absolute; top: 0px; left: 0px; margin-top: 50px; margin-left: 20px;">
-        <div class="row">
-          <div class="col col-center" style="max-width: 100px; min-width: 100px; min-height: 100px;">
+      <div style="position: absolute; top: 0px; left: 0px; margin-top: 15%; margin-left: 10%; width: 80%;">
+        <div class="row"">
+          <div class="col">
             <div style="position: relative;">
               <div style="position: absolute; left: 50%; width: auto; transform: translateX(-50%);">
                 <img src="img\ic_bus_black.png" style="max-width: 100px;">
@@ -58,7 +62,7 @@
               {{ticket.lineCode}}
             </div>
           </div>
-          <div class="col col-center" style="font-size: 18px">
+          <div class="col col-67 col-center" style="font-size: 18px">
             <div class="row">
               <div class="col">
                 {{ticket.ticketLabel}}
@@ -68,7 +72,7 @@
             <div class="col col-50">
               {{ticket.status}}
             </div>
-            <div class="col">
+            <div class="col" style="text-align: right">
               K {{ticket.fare}}
             </div>
           </div>
@@ -80,10 +84,10 @@
         <img ng-src={{ticket.qrUrl}} style="max-width: 100%; display: block; margin: auto;">
     </div>
     <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-60%) translateX(-50%); width: 80%;">
-        <img src="img\img_expired_en.png" style="max-width: 100%" ng-if="ticket.status == 'EXPIRED'">
-        <img src="img\img_refund_en.png" style="max-width: 100%" ng-if="ticket.status == 'REFUND'">
-        <img src="img\img_used_en.png" style="max-width: 100%" ng-if="ticket.status == 'USED'">
-        <img src="img\img_disabled_en.png" style="max-width: 100%" ng-if="ticket.status == 'DISABLED'">
+        <img src="img\img_expired_en.png" style="max-width: 100%; display: block; margin: auto;" ng-if="ticket.status == 'EXPIRED'">
+        <img src="img\img_refund_en.png" style="max-width: 100%; display: block; margin: auto;" ng-if="ticket.status == 'REFUND'">
+        <img src="img\img_used_en.png" style="max-width: 100%; display: block; margin: auto;" ng-if="ticket.status == 'USED'">
+        <img src="img\img_disabled_en.png" style="max-width: 100%; display: block; margin: auto;" ng-if="ticket.status == 'DISABLED'">
     </div>
 
       <div style="position: absolute; top: 0px; margin-top: 88%; left: 50%; transform: translateX(-50%); font-size: 18px; width: 85%">

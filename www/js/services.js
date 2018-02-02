@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('QRService', function($http, $q, buildconfig) {
+.factory('QRService', function($http, $q, $window) {
 
   return {
     send: function(req) {
@@ -8,7 +8,7 @@ angular.module('starter.services', [])
       var deferred = $q.defer();
       $http({
         method: "POST",
-        url: buildconfig.qrServiceUrl + req.service,
+        url: $window.sessionStorage.getItem("server") + req.service,
         timeout: 5000,
         headers: {'Content-Type': 'application/json'},
         data: req.data 

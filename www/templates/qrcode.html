@@ -4,17 +4,23 @@
       <ion-nav-back-button class="button-clear"><i class="icon ion-android-arrow-back"></i></ion-nav-back-button>
     </ion-nav-bar>
   <ion-content class="has-header" name="forMsg">
-  	<div style="position: relative;">
-  		<img src='img\bg_msi_account.png'/ style="max-width: 100%">
+    <div style="position: relative;">
+      	<img src='img\bg_msi_account.png'
+        style="max-width: 100%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;">
+
     	<img style="position: absolute; 
     	top: 0; bottom: 0;
         margin-top: auto;
         margin-bottom: auto;
     	left:0;	right:0;
-		margin-left:auto;
-		margin-right:auto;" ng-src={{qrUrl}}>
-    </div>
-    <div style="position: absolute; top: 0px; left: 0px; margin-top: 12%; margin-left: 6%; font-size: 20px">
+    	margin-left:auto;
+    	margin-right:auto;"
+        ng-src={{qrUrl}}>
+
+    <div style="position: absolute; top: 0px; left: 0px; margin-top: 10%; margin-left: 10%; font-size: 20px; max-width: 80%">
     	<div class="row">
     		<div class="col col-33">
     			<i class="icon material-icons" style="font-size: 100px">portrait</i>
@@ -25,8 +31,10 @@
     			<br><br>
     			User ID: {{userid}}
     		</div>
+        </div>
     </div>
-    <div style="position: absolute; top: 0px; left: 0px; margin-top: 90%; margin-left: 10%; font-size: 20px">
+
+    <div style="position: absolute; bottom: 0px; left: 0px; margin-bottom: 10%; margin-left: 10%; font-size: 20px; max-width: 80%">
     	<div class="row">
     		<div class="col col-20 col-center" align="center">
     			<i class="icon ion-ios-bell"></i>
@@ -35,6 +43,7 @@
 		    	<i style="font-size: 18px">Face The Mobile Screen Towards The Top Up Device.</i>
 		    </div>
 		</div>
+    </div>
     </div>
   </ion-content>
 </ion-view>
